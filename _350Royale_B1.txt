@@ -1,0 +1,11 @@
+Player: Baseline1
+SCSA Name: ABColor
+Game: 4 Pegs 6 Colors
+Rounds: 100 out of 100
+Results: {Wins: 8, Losses: 92, Failures: 0, Score: 190.5479514794811}
+
+Player: Baseline1
+SCSA Name: InsertColors
+Game: 4 Pegs 6 Colors
+Rounds: 100 out of 100
+Results: {Wins: 10, Losses: 90, Failures: 0, Score: 245.04879801707975}
