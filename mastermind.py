@@ -245,10 +245,12 @@ class Round:
             exact, other = self.process_guess(guess)
 
             response = (Result.VALID, exact, other, self.guesses)
+            print("Valid guess:", guess)
 
         else:
 
             response = (Result.FAILURE, 0, 0, self.guesses)
+            print("Invalid guess:", guess)
 
         return response
 

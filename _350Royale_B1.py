@@ -31,18 +31,19 @@ class _350Royale_B1(Player):
     ) -> str:
         
         if self.guess_list is None:
-            self.guess_list = itertools.product(colors, repeat=board_length)
+            self.guess_list = itertools.cycle(itertools.product(colors, repeat=board_length))
         
         new_guess = next(self.guess_list, None)
         
-        if new_guess is None:
-            return ""
+        #if new_guess is None:
+        #    return ""
         
-        return_guess = ''.join(new_guess)
+        return_guess = ''.join(new_guess) 
         
         return return_guess
 
 
+'''
 player = _350Royale_B1()
 scsa = ABColor()
 
@@ -50,5 +51,6 @@ colors = ["A","B"]
 board_length = 4
 num_rounds = 100
 
-mastermind = Mastermind(board_length, colors)
+mastermind = Mastermind()
 mastermind.play_tournament(player, scsa, 100)
+'''

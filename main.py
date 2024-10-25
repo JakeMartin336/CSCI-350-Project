@@ -2,6 +2,7 @@
 # See example.ipynb for other ways to use the Mastermind representation.
 
 import argparse
+import _350Royale_B1
 from scsa import *
 from player import *
 from mastermind import *
@@ -17,7 +18,7 @@ parser.add_argument(
     nargs="?",
     type=str,
     required=True,
-    choices=["RandomFolks", "Boring"],
+    choices=["RandomFolks", "Boring", "_350Royale_B1"],
 )
 parser.add_argument(
     "--scsa_name",
@@ -49,6 +50,10 @@ def str_to_player(player_name: str) -> Player:
     elif player_name == "Boring":
 
         player = Boring()
+
+    elif player_name == "_350Royale_B1":
+
+        player = _350Royale_B1._350Royale_B1()
 
     else:
 
