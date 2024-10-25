@@ -18,7 +18,7 @@ parser.add_argument(
     nargs="?",
     type=str,
     required=True,
-    choices=["RandomFolks", "Boring", "_350Royale_B1"],
+    choices=["RandomFolks", "Boring", "Baseline1"],
 )
 parser.add_argument(
     "--scsa_name",
@@ -51,9 +51,9 @@ def str_to_player(player_name: str) -> Player:
 
         player = Boring()
 
-    elif player_name == "_350Royale_B1":
+    elif player_name == "Baseline1":
 
-        player = _350Royale_B1._350Royale_B1()
+        player = _350Royale_B1.Baseline1()
 
     else:
 

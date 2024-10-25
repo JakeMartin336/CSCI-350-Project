@@ -17,40 +17,28 @@ from mastermind import *
 import time
 import itertools
 
-class _350Royale_B1(Player):
+class Baseline1(Player):
     def __init__(self):
-        self.player_name = "_350Royale_B1"
+        self.player_name = "Baseline1"
         self.guess_list = None
 
     def make_guess(
         self,
         board_length: int,
         colors: list[str],
-        scsa_name: str,
-        last_response: tuple[int, int, int],
+        scsa_name: str,                             #Type of SCSA irrelevant to player
+        last_response: tuple[int, int, int],        #No attention paid to responses
     ) -> str:
         
         if self.guess_list is None:
-            self.guess_list = itertools.cycle(itertools.product(colors, repeat=board_length))
-        
-        new_guess = next(self.guess_list, None)
-        
-        #if new_guess is None:
-        #    return ""
-        
-        return_guess = ''.join(new_guess) 
-        
-        return return_guess
 
+            self.guess_list = itertools.cycle(      #Iterates repeatably if all possible guesses are enumerated
+                itertools.product(                  #Creates a list of all possible guesses
+                    colors, 
+                    repeat=board_length
+                )
+            )
 
-'''
-player = _350Royale_B1()
-scsa = ABColor()
-
-colors = ["A","B"]
-board_length = 4
-num_rounds = 100
-
-mastermind = Mastermind()
-mastermind.play_tournament(player, scsa, 100)
-'''
+        guess = ''.join(next(self.guess_list, None)) 
+        
+        return guess
