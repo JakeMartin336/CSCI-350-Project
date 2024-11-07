@@ -2,6 +2,7 @@
 from scsa import *
 from player import *
 from mastermind import *
+import _350Royale_B1
 import time
 
 class TournamentPlayer(Player):
@@ -19,20 +20,20 @@ class TournamentPlayer(Player):
     ) -> str:
         
         if scsa_name == "InsertColors":
-            make_guess = None
+            make_guess = _350Royale_B1.Baseline1()
         elif scsa_name == "TwoColor":
-            make_guess = None
+            make_guess = _350Royale_B1.Baseline1()
         elif scsa_name == "ABColor":
-            make_guess = None
+            make_guess = _350Royale_B1.Baseline1()
         elif scsa_name == "TwoColorAlternating":
-            make_guess = None
+            make_guess = _350Royale_B1.Baseline1()
         elif scsa_name == "OnlyOnce":
-            make_guess = None
+            make_guess = _350Royale_B1.Baseline1()
         elif scsa_name == "FirstLast":
-            make_guess = None
+            make_guess = _350Royale_B1.Baseline1()
         elif scsa_name == "UsuallyFewer":
-            make_guess = None
+            make_guess = _350Royale_B1.Baseline1()
         elif scsa_name == "PreferFewer":
-            make_guess = None
+            make_guess = _350Royale_B1.Baseline1()
         else:
             raise ValueError("Unrecognized SCSA.")
