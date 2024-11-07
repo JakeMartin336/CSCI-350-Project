@@ -7,7 +7,7 @@ import time
 
 class TournamentPlayer(Player):
     def __init__(self):
-        self.player_name = "350 Royale Tournament Player"
+        self.player_name = "Tournament Player"
         self.time = None
         self.num_guesses = 0
 
@@ -19,23 +19,45 @@ class TournamentPlayer(Player):
         last_response: tuple[int, int, int],        #No attention paid to responses
     ) -> str:
         
+        start = time.time()
+
         if scsa_name == "InsertColors":
             make_guess = _350Royale_B1.Baseline1()
+            self.num_guesses += 1
+        
         elif scsa_name == "TwoColor":
             make_guess = _350Royale_B1.Baseline1()
+            self.num_guesses += 1
+        
         elif scsa_name == "ABColor":
             make_guess = _350Royale_B1.Baseline1()
+            self.num_guesses += 1
+        
         elif scsa_name == "TwoColorAlternating":
             make_guess = _350Royale_B1.Baseline1()
+            self.num_guesses += 1
+        
         elif scsa_name == "OnlyOnce":
             make_guess = _350Royale_B1.Baseline1()
+            self.num_guesses += 1
+        
         elif scsa_name == "FirstLast":
             make_guess = _350Royale_B1.Baseline1()
+            self.num_guesses += 1
+        
         elif scsa_name == "UsuallyFewer":
             make_guess = _350Royale_B1.Baseline1()
+            self.num_guesses += 1
+        
         elif scsa_name == "PreferFewer":
             make_guess = _350Royale_B1.Baseline1()
+            self.num_guesses += 1
+        
         else:
             raise ValueError("Unrecognized SCSA.")
         
+
+        end = time.time()
+        duration = end - start
+
         return make_guess
