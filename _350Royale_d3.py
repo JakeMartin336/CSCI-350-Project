@@ -37,3 +37,5 @@ class TournamentPlayer(Player):
             make_guess = _350Royale_B1.Baseline1()
         else:
             raise ValueError("Unrecognized SCSA.")
+        
+        return make_guess
