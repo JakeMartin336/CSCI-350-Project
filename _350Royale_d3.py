@@ -3,13 +3,42 @@ from scsa import *
 from player import *
 from mastermind import *
 import _350Royale_B1
-import time
+import itertools
+
+
+def solveInsertColors():
+    None
+
+def solveTwoColors():
+    None
+
+def solveABColor():
+    None
+
+def solveTwoColorAlternating():
+    None
+
+def solveOnlyOnce():
+    None
+
+def solveFirstLast():
+    None
+
+def solveUsuallyFewer():
+    None
+
+def solvePreferFewer():
+    None
+
+def solveGeneralPurpose():
+    None
+
 
 class TournamentPlayer(Player):
     def __init__(self):
         self.player_name = "Tournament Player"
-        self.time = None
         self.num_guesses = 0
+        self.guess_list = None
 
     def make_guess(
         self,
@@ -19,45 +48,50 @@ class TournamentPlayer(Player):
         last_response: tuple[int, int, int],        #No attention paid to responses
     ) -> str:
         
-        start = time.time()
+        make_guess = None
 
-        if scsa_name == "InsertColors":
-            make_guess = _350Royale_B1.Baseline1()
-            self.num_guesses += 1
-        
-        elif scsa_name == "TwoColor":
-            make_guess = _350Royale_B1.Baseline1()
-            self.num_guesses += 1
-        
-        elif scsa_name == "ABColor":
-            make_guess = _350Royale_B1.Baseline1()
-            self.num_guesses += 1
-        
-        elif scsa_name == "TwoColorAlternating":
-            make_guess = _350Royale_B1.Baseline1()
-            self.num_guesses += 1
-        
-        elif scsa_name == "OnlyOnce":
-            make_guess = _350Royale_B1.Baseline1()
-            self.num_guesses += 1
-        
-        elif scsa_name == "FirstLast":
-            make_guess = _350Royale_B1.Baseline1()
-            self.num_guesses += 1
-        
-        elif scsa_name == "UsuallyFewer":
-            make_guess = _350Royale_B1.Baseline1()
-            self.num_guesses += 1
-        
-        elif scsa_name == "PreferFewer":
-            make_guess = _350Royale_B1.Baseline1()
+        if self.num_guesses == 0 and self.guess_list == None:
+            # Henry Tse
+            if scsa_name == "InsertColors":
+                self.guess_list = solveInsertColors()
+            
+            # Jacob Martin
+            elif scsa_name == "TwoColor":
+                self.guess_list = solveTwoColors()
+            
+             # Jacob Martin
+            elif scsa_name == "ABColor":
+                self.guess_list = solveABColor()
+            
+            # Henry Tse
+            elif scsa_name == "TwoColorAlternating":
+                self.guess_list = solveTwoColorAlternating()
+            
+            # Usman Sheikh
+            elif scsa_name == "OnlyOnce":
+                self.guess_list = solveOnlyOnce()
+            
+            # Usman Sheikh
+            elif scsa_name == "FirstLast":
+                self.guess_list = solveFirstLast()
+            
+            # Jacob Martin
+            elif scsa_name == "UsuallyFewer":
+                self.guess_list = solveUsuallyFewer()
+            
+            # Usman Sheikh 
+            elif scsa_name == "PreferFewer":
+                self.guess_list = solvePreferFewer()
+            
+            # Henry Tse
+            else:
+                self.guess_list = solveGeneralPurpose()
+
+            make_guess = ''.join(next(self.guess_list, None))
             self.num_guesses += 1
         
         else:
-            raise ValueError("Unrecognized SCSA.")
+            make_guess = ''.join(next(self.guess_list, None))
+            self.num_guesses += 1
         
-
-        end = time.time()
-        duration = end - start
-
         return make_guess

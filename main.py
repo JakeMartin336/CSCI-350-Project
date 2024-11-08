@@ -47,7 +47,7 @@ parser.add_argument("--num_rounds", nargs="?", type=int, required=True)
 
 args = parser.parse_args()
 
-def str_to_player(player_name: str, scsa: str) -> Player:
+def str_to_player(player_name: str) -> Player:
 
     if player_name == "RandomFolks":
         player = RandomFolks()
@@ -59,7 +59,7 @@ def str_to_player(player_name: str, scsa: str) -> Player:
         player = _350Royale_B1.Baseline1()
 
     elif player_name == 'TournamentPlayer':
-        player = _350Royale_d3.TournamentPlayer(scsa)
+        player = _350Royale_d3.TournamentPlayer()
 
     else:
         raise ValueError("Unrecognized Player.")
@@ -106,7 +106,7 @@ def str_to_scsa(scsa_name: str) -> SCSA:
 # tournament against each of the 13 SCSAs and made no illegal guesses.
 
 
-player = str_to_player(args.player_name, args.scsa_name)
+player = str_to_player(args.player_name)
 scsa = str_to_scsa(args.scsa_name)
 colors = [chr(i) for i in range(65, 91)][: args.num_colors]
 
@@ -122,3 +122,8 @@ mastermind.play_tournament(player, scsa, args.num_rounds)
 
 # mastermind = Mastermind(args.board_length, colors, guess_cutoff, round_time_cutoff, tournament_time_cutoff)
 # mastermind.play_tournament(player, scsa, num_rounds)
+
+
+
+# 7 pegs
+# 5 colors
