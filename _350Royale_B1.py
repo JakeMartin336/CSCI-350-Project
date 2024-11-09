@@ -26,8 +26,9 @@ class Baseline1(Player):
         self,
         board_length: int,
         colors: list[str],
-        scsa_name: str,                             #Type of SCSA irrelevant to player
-        last_response: tuple[int, int, int],        #No attention paid to responses
+        scsa_name: str,
+        #[correct color in correct position, correct color wrong position, guesses made]
+        last_response: tuple[int, int, int],        
     ) -> str:
         
         if self.guess_list is None:

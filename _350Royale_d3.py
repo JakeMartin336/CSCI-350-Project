@@ -1,4 +1,3 @@
-
 from scsa import *
 from player import *
 from mastermind import *
@@ -15,8 +14,22 @@ def solveTwoColors():
 def solveABColor():
     None
 
-def solveTwoColorAlternating():
-    None
+#Can be further optimized by taking the previous guess and removing certain colors from previous guess.
+def solveTwoColorAlternating(board_length: int, colors: list[str]):
+    colorPairs = list(itertools.permutations(colors, 2))
+
+    
+    guess_list = []
+    for pair in colorPairs:
+        pattern = []  # Initialize empty list
+        for i in range(board_length):
+            if i % 2 == 0:
+                pattern.append(pair[0])
+            else:
+                pattern.append(pair[1])
+        guess_list.append(pattern)
+
+    return guess_list
 
 def solveOnlyOnce():
     None
@@ -44,12 +57,11 @@ class TournamentPlayer(Player):
         self,
         board_length: int,
         colors: list[str],
-        scsa_name: str,                             #Type of SCSA irrelevant to player
-        last_response: tuple[int, int, int],        #No attention paid to responses
+        scsa_name: str,
+        #[correct color in correct position, correct color wrong position, guesses made]
+        last_response: tuple[int, int, int],
     ) -> str:
-        
-        make_guess = None
-
+        # Initialize generator on first guess
         if self.num_guesses == 0 and self.guess_list == None:
             # Henry Tse
             if scsa_name == "InsertColors":
@@ -65,7 +77,7 @@ class TournamentPlayer(Player):
             
             # Henry Tse
             elif scsa_name == "TwoColorAlternating":
-                self.guess_list = solveTwoColorAlternating()
+                self.guess_list = itertools.cycle(solveTwoColorAlternating(board_length, colors))
             
             # Usman Sheikh
             elif scsa_name == "OnlyOnce":
@@ -87,11 +99,8 @@ class TournamentPlayer(Player):
             else:
                 self.guess_list = solveGeneralPurpose()
 
-            make_guess = ''.join(next(self.guess_list, None))
-            self.num_guesses += 1
-        
-        else:
-            make_guess = ''.join(next(self.guess_list, None))
-            self.num_guesses += 1
-        
-        return make_guess
+        # Get next pattern
+        make_guess = next(self.guess_list, None)
+            
+        self.num_guesses += 1
+        return ''.join(make_guess)
