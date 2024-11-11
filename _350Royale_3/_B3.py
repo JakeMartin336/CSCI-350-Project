@@ -50,7 +50,6 @@ class Baseline3(Player):
                 known_sum = sum(self.color_counts.values())
                 last_color = colors[-1]
                 self.color_counts[last_color] = board_length - known_sum
-                print(f"Color counts found: {self.color_counts}")
                 
                 # Generate new guess list based on color counts
                 self.guess_list = self.generate_combinations(self.color_counts)
