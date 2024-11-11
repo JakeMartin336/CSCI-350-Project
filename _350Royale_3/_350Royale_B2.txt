@@ -1,0 +1,72 @@
+Player: Baseline2
+SCSA Name: InsertColors
+Game: 5 Pegs 7 Colors
+Rounds: 100 out of 100
+Results: {Wins: 100, Losses: 0, Failures: 0, Score: 6754.292644311472}
+
+TwoColorPlayer: Baseline2
+SCSA Name: TwoColor
+Game: 5 Pegs 7 Colors
+Rounds: 100 out of 100
+Results: {Wins: 100, Losses: 0, Failures: 0, Score: 7211.106193608875}
+
+Player: Baseline2
+SCSA Name: ABColor
+Game: 5 Pegs 7 Colors
+Rounds: 100 out of 100
+Results: {Wins: 100, Losses: 0, Failures: 0, Score: 9424.530018789157}
+
+Player: Baseline2
+SCSA Name: TwoColorAlternating
+Game: 5 Pegs 7 Colors
+Rounds: 100 out of 100
+Results: {Wins: 100, Losses: 0, Failures: 0, Score: 7205.471541308946}
+
+Player: Baseline2
+SCSA Name: OnlyOnce
+Game: 5 Pegs 7 Colors
+Rounds: 100 out of 100
+Results: {Wins: 100, Losses: 0, Failures: 0, Score: 6651.1550061108}
+
+Player: Baseline2
+SCSA Name: FirstLast
+Game: 5 Pegs 7 Colors
+Rounds: 100 out of 100
+Results: {Wins: 100, Losses: 0, Failures: 0, Score: 6788.014611316979}
+
+Player: Baseline2
+SCSA Name: UsuallyFewer
+Game: 5 Pegs 7 Colors
+Rounds: 100 out of 100
+Results: {Wins: 100, Losses: 0, Failures: 0, Score: 7199.026831420839}
+
+Player: Baseline2
+SCSA Name: PreferFewer
+Game: 5 Pegs 7 Colors
+Rounds: 100 out of 100
+Results: {Wins: 100, Losses: 0, Failures: 0, Score: 8884.55838607003}
+
+Player: Baseline2
+SCSA Name: Mystery1
+Game: 5 Pegs 7 Colors
+Rounds: 100 out of 100
+Results: {Wins: 100, Losses: 0, Failures: 0, Score: 8021.21983352286}
+
+Player: Baseline2
+SCSA Name: Mystery2
+Game: 5 Pegs 7 Colors
+Rounds: 100 out of 100
+Results: {Wins: 100, Losses: 0, Failures: 0, Score: 6655.051772828374}
+
+Player: Baseline2
+SCSA Name: Mystery4
+Game: 5 Pegs 7 Colors
+Rounds: 100 out of 100
+Results: {Wins: 100, Losses: 0, Failures: 0, Score: 9059.164962025512}
+
+Player: Baseline2
+SCSA Name: Mystery5
+Game: 5 Pegs 7 Colors
+Rounds: 100 out of 100
+Results: {Wins: 100, Losses: 0, Failures: 0, Score: 7447.620708851891}
+
