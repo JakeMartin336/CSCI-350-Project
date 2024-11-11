@@ -9,10 +9,12 @@
 
 import argparse
 import _350Royale_B1
+import _350Royale_B2
 import _350Royale_d3
 from scsa import *
 from player import *
 from mastermind import *
+import time
 
 
 parser = argparse.ArgumentParser(description="Play a game of Mastermind.")
@@ -25,7 +27,7 @@ parser.add_argument(
     nargs="?",
     type=str,
     required=True,
-    choices=["RandomFolks", "Boring", "Baseline1", 'TournamentPlayer'],
+    choices=["RandomFolks", "Boring", "Baseline1", "Baseline2", 'TournamentPlayer'],
 )
 parser.add_argument(
     "--scsa_name",
@@ -57,6 +59,9 @@ def str_to_player(player_name: str) -> Player:
 
     elif player_name == "Baseline1":
         player = _350Royale_B1.Baseline1()
+
+    elif player_name == "Baseline2":
+        player = _350Royale_B2.Baseline2()
 
     elif player_name == 'TournamentPlayer':
         player = _350Royale_d3.TournamentPlayer()
@@ -110,8 +115,16 @@ player = str_to_player(args.player_name)
 scsa = str_to_scsa(args.scsa_name)
 colors = [chr(i) for i in range(65, 91)][: args.num_colors]
 
+# Add tournament timing
+start_time = time.time()
 mastermind = Mastermind(args.board_length, colors)
-mastermind.play_tournament(player, scsa, args.num_rounds)
+results = mastermind.play_tournament(player, scsa, args.num_rounds)
+end_time = time.time()
+
+# Print tournament summary
+print(f"\nTournament Time:")
+print(f"Time taken: {end_time - start_time:.2f} seconds")
+print(f"Average time per round: {(end_time - start_time)/args.num_rounds:.2f} seconds")
 
 ###################################################################################
 
