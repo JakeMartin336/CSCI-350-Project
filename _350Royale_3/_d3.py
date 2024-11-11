@@ -16,8 +16,9 @@ def solveABColor(board_length: int, colors: list[str]):
     pattern = [colors[0]] * board_length
     return itertools.cycle([pattern])
 
-#Can be further optimized by taking the previous guess and removing certain colors from previous guess.
+
 def solveTwoColorAlternating(board_length: int, colors: list[str]):
+    #Can be further optimized by taking the previous guess and removing certain colors from previous guess.
     colorPairs = list(itertools.permutations(colors, 2))
     patterns = []
     for pair in colorPairs:
@@ -47,8 +48,7 @@ def solvePreferFewer(board_length: int, colors: list[str]):
     return itertools.cycle([pattern])
 
 def solveGeneralPurpose(board_length: int, colors: list[str]):
-    pattern = [colors[0]] * board_length
-    return itertools.cycle([pattern])
+    return solveInsertColors(board_length, colors)
 
 
 class _350Royale(Player):
