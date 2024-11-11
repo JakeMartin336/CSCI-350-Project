@@ -1,55 +1,99 @@
 from scsa import *
 from player import *
 from mastermind import *
-import _350Royale_B1
 import itertools
+import random
+import _350Royale_B2
 
 
-def solveInsertColors():
-    None
+def solveInsertColors(board_length: int, colors: list[str]):
+    pattern = [colors[0]] * board_length
+    return itertools.cycle([pattern])
 
-def solveTwoColors():
-    None
 
-def solveABColor():
-    None
+def solveTwoColors(board_length: int, colors: list[str]):
+    pattern = [colors[0]] * board_length
+    return itertools.cycle([pattern])
 
-#Can be further optimized by taking the previous guess and removing certain colors from previous guess.
+
+def solveABColor(board_length: int):
+    # Can be further optimized by taking the previous guess and keeping only the indexes where the correct color is in the correct position
+    usable_colors = ["A", "B"]
+    return itertools.cycle(itertools.product(usable_colors, repeat=board_length))
+
+
 def solveTwoColorAlternating(board_length: int, colors: list[str]):
+    # Can be further optimized by taking the previous guess and removing certain colors from previous guess.
     colorPairs = list(itertools.permutations(colors, 2))
-
-    
-    guess_list = []
+    patterns = []
     for pair in colorPairs:
-        pattern = []  # Initialize empty list
+        pattern = []
         for i in range(board_length):
             if i % 2 == 0:
                 pattern.append(pair[0])
             else:
                 pattern.append(pair[1])
+        patterns.append(pattern)
+    return itertools.cycle(patterns)
+
+
+def solveOnlyOnce(board_length: int, colors: list[str]):
+    pattern = [colors[0]] * board_length
+    return itertools.cycle([pattern])
+
+
+def solveFirstLast(board_length: int, colors: list[str]):
+    pattern = [colors[0]] * board_length
+    return itertools.cycle([pattern])
+
+
+def solveUsuallyFewer(board_length: int, colors: list[str]):
+    guess_list = []
+    for _ in range(100):
+        probability = random.randint(0, 100)
+        if probability < 90:
+            num_colors = random.randint(2, 3)
+            picked_colors = random.sample(colors, k=num_colors)
+        else:
+            picked_colors = colors
+        pattern = random.choices(picked_colors, k=board_length)
         guess_list.append(pattern)
-
-    return guess_list
-
-def solveOnlyOnce():
-    None
-
-def solveFirstLast():
-    None
-
-def solveUsuallyFewer():
-    None
-
-def solvePreferFewer():
-    None
-
-def solveGeneralPurpose():
-    None
+    return itertools.cycle(guess_list)
 
 
-class TournamentPlayer(Player):
+def solvePreferFewer(board_length: int, colors: list[str]):
+    guess_list = []
+    for _ in range(100):
+        probability = random.randint(0, 100)
+        if probability <= 49:
+            num_colors = 1
+            picked_colors = random.sample(colors, k=num_colors)
+        elif probability <= 74:
+            num_colors = 2
+            picked_colors = random.sample(colors, k=num_colors)
+        elif probability <= 87:
+            num_colors = min(3, len(colors))
+            picked_colors = random.sample(colors, k=num_colors)
+        elif probability <= 95:
+            num_colors = min(4, len(colors))
+            picked_colors = random.sample(colors, k=num_colors)
+        elif probability <= 98:
+            num_colors = min(5, len(colors))
+            picked_colors = random.sample(colors, k=num_colors)
+        else:
+            picked_colors=colors
+        pattern = random.choices(picked_colors, k=board_length)
+        guess_list.append(pattern)
+    return itertools.cycle(guess_list)
+
+
+def solveGeneralPurpose(board_length: int, colors: list[str]):
+    return solveInsertColors(board_length, colors)
+
+
+class _350Royale(Player):
     def __init__(self):
-        self.player_name = "Tournament Player"
+        self.player_name = "_350Royale"
         self.num_guesses = 0
         self.guess_list = None
 
@@ -65,39 +109,40 @@ class TournamentPlayer(Player):
         if self.num_guesses == 0 and self.guess_list == None:
             # Henry Tse
             if scsa_name == "InsertColors":
-                self.guess_list = solveInsertColors()
+                self.guess_list = solveInsertColors(board_length, colors)
+            
+            # Usman Sheikh
+            elif scsa_name == "TwoColor":
+                self.guess_list = solveTwoColors(board_length, colors)
             
             # Jacob Martin
-            elif scsa_name == "TwoColor":
-                self.guess_list = solveTwoColors()
-            
-             # Jacob Martin
             elif scsa_name == "ABColor":
-                self.guess_list = solveABColor()
+                self.guess_list = solveABColor(board_length)
             
             # Henry Tse
             elif scsa_name == "TwoColorAlternating":
-                self.guess_list = itertools.cycle(solveTwoColorAlternating(board_length, colors))
+                self.guess_list = solveTwoColorAlternating(board_length, colors)
             
             # Usman Sheikh
             elif scsa_name == "OnlyOnce":
-                self.guess_list = solveOnlyOnce()
+                self.guess_list = solveOnlyOnce(board_length, colors)
             
             # Usman Sheikh
             elif scsa_name == "FirstLast":
-                self.guess_list = solveFirstLast()
+                self.guess_list = solveFirstLast(board_length, colors)
             
             # Jacob Martin
             elif scsa_name == "UsuallyFewer":
-                self.guess_list = solveUsuallyFewer()
+                self.guess_list = solveUsuallyFewer(board_length, colors)
+                # helper = _350Royale_B2.Baseline2()
             
-            # Usman Sheikh 
+            # Jacob Martin
             elif scsa_name == "PreferFewer":
-                self.guess_list = solvePreferFewer()
+                self.guess_list = solvePreferFewer(board_length, colors)
             
             # Henry Tse
             else:
-                self.guess_list = solveGeneralPurpose()
+                self.guess_list = solveGeneralPurpose(board_length, colors)
 
         # Get next pattern
         make_guess = next(self.guess_list, None)
