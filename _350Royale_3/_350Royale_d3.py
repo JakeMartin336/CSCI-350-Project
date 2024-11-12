@@ -165,7 +165,10 @@ class _350Royale(Player):
             
             # Usman Sheikh
             elif scsa_name == "TwoColor":
-                self.guess_list = solveTwoColors(board_length, colors)
+                # self.guess_list = solveTwoColors(board_length, colors)
+                self.use_last_guess = True
+                self.solver = ExhaustiveStrategy(board_length, colors)
+                self.solver.initialize()
             
             # Jacob Martin
             elif scsa_name == "ABColor":
@@ -177,11 +180,17 @@ class _350Royale(Player):
             
             # Usman Sheikh
             elif scsa_name == "OnlyOnce":
-                self.guess_list = solveOnlyOnce(board_length, colors)
+                # self.guess_list = solveOnlyOnce(board_length, colors)
+                self.use_last_guess = True
+                self.solver = ExhaustiveStrategy(board_length, colors)
+                self.solver.initialize()
             
             # Usman Sheikh
             elif scsa_name == "FirstLast":
-                self.guess_list = solveFirstLast(board_length, colors)
+                # self.guess_list = solveFirstLast(board_length, colors)
+                self.use_last_guess = True
+                self.solver = ExhaustiveStrategy(board_length, colors)
+                self.solver.initialize()
             
             # Jacob Martin
             elif scsa_name == "UsuallyFewer":
