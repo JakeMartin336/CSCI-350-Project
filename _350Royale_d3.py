@@ -186,8 +186,10 @@ class _350Royale(Player):
             
             # Jacob Martin
             elif scsa_name == "UsuallyFewer":
-                self.guess_list = solveUsuallyFewer(board_length, colors)
-                # helper = _350Royale_B2.Baseline2()
+                # self.guess_list = solveUsuallyFewer(board_length, colors)
+                self.use_last_guess = True
+                self.solver = ExhaustiveStrategy(board_length, colors)
+                self.solver.initialize()
             
             # Jacob Martin
             elif scsa_name == "PreferFewer":
