@@ -3,13 +3,14 @@
 
 # To run:
 # python main.py --board_length 4 --num_colors 4 --player_name Baseline1 --scsa_name InsertColors --num_rounds 5
-# python main.py --board_length 4 --num_colors 4 --player_name TournamentPlayer --scsa_name InsertColors --num_rounds 5
+# python main.py --board_length 4 --num_colors 4 --player_name _350Royale --scsa_name InsertColors --num_rounds 5
 
 
 
 import argparse
 import _350Royale_B1
 import _350Royale_B2
+import _350Royale_B3
 import _350Royale_d3
 from scsa import *
 from player import *
@@ -27,7 +28,7 @@ parser.add_argument(
     nargs="?",
     type=str,
     required=True,
-    choices=["RandomFolks", "Boring", "Baseline1", "Baseline2", 'TournamentPlayer'],
+    choices=["RandomFolks", "Boring", "Baseline1", "Baseline2", '_350Royale'],
 )
 parser.add_argument(
     "--scsa_name",
@@ -63,8 +64,8 @@ def str_to_player(player_name: str) -> Player:
     elif player_name == "Baseline2":
         player = _350Royale_B2.Baseline2()
 
-    elif player_name == 'TournamentPlayer':
-        player = _350Royale_d3.TournamentPlayer()
+    elif player_name == '_350Royale':
+        player = _350Royale_d3._350Royale()
 
     else:
         raise ValueError("Unrecognized Player.")
@@ -123,8 +124,8 @@ end_time = time.time()
 
 # Print tournament summary
 print(f"\nTournament Time:")
-print(f"Time taken: {end_time - start_time:.2f} seconds")
-print(f"Average time per round: {(end_time - start_time)/args.num_rounds:.2f} seconds")
+print(f"Time taken: {end_time - start_time:.4f} seconds")
+print(f"Average time per round: {(end_time - start_time)/args.num_rounds:.4f} seconds")
 
 ###################################################################################
 
