@@ -222,6 +222,70 @@ class _350Royale(Player):
             # Jacob Martin
             elif scsa_name == "PreferFewer":
                 self.guess_list = solvePreferFewer(board_length, colors)
+
+            elif scsa_name == "Mystery1":
+                '''
+                Mystery 1 seems to favor monochrome codes but has a tendancy to 
+                generate some sort of pattern, still not sure what it is
+                Seems similar to PreferFewer
+                '''
+                self.use_last_guess = True
+                self.solver = ExhaustiveStrategy(board_length, colors)
+                self.solver.initialize()
+
+            elif scsa_name == "Mystery2":
+                '''
+                Essentially, the first 4 colors of the code are generated
+                seemingly at random, but then those 4 colors repeat until
+                it reaches the lenght of the board
+                '''
+                self.use_last_guess = True
+                self.solver = ExhaustiveStrategy(board_length, colors)
+                self.solver.initialize()
+
+            elif scsa_name == "Mystery3":
+                '''
+                Will only use the color A,B,C,F
+                Could have a pattern though
+                '''
+                self.use_last_guess = True
+                self.solver = ExhaustiveStrategy(board_length, colors)
+                self.solver.initialize()
+
+            elif scsa_name == "Mystery4":
+                '''
+                Strong preference for single color codes
+                If there are more than one color, it is either 1 or 2 more colors
+
+                '''
+                self.use_last_guess = True
+                self.solver = ExhaustiveStrategy(board_length, colors)
+                self.solver.initialize()
+
+            elif scsa_name == "Mystery5":
+                '''
+                WIll only use two colors    
+                    E.g A and B
+
+                Will start off repeating the two colors in pairs twice
+                    BABA
+
+                Then It repeats the pattern in reverse order
+                    ABAB
+
+                Finally prints out the second color in the first pair twice
+                    AA
+
+                Resulting in the following pattern:
+                    BABAABABAA
+                    BABA ABAB AA
+
+                Since the example output only is board length 10, the rest of the pattern is assumed to 
+                repeat.
+                '''
+                self.use_last_guess = True
+                self.solver = ExhaustiveStrategy(board_length, colors)
+                self.solver.initialize()
             
             # Henry Tse
             else:
