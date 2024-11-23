@@ -112,6 +112,75 @@ class CountingStrategy(Solver):
         self.current_index += 1
         return guess
 
+"""
+Hybrid Strategy
+Combines CountingStrategy's color counting with ExhaustiveStrategy's elimination
+"""
+class HybridStrategy(Solver):
+    def __init__(self, board_length, colors):
+        super().__init__(board_length, colors)
+        self.color_counts = {}
+        self.counting_phase = True
+        self.current_index = 0
+
+    def matches_response(self, candidate: list, last_guess: list, correct_pos: int, correct_color: int) -> bool:
+        # Count exact matches
+        exact = sum(1 for i in range(len(candidate)) if candidate[i] == last_guess[i])
+        # Count color matches
+        color_matches = sum(min(candidate.count(c), last_guess.count(c)) for c in set(candidate))
+        
+        return exact == correct_pos and (color_matches - exact) == correct_color
+
+    def generate_combinations(self, color_counts):
+        elements = []
+        for color, count in color_counts.items():
+            elements.extend([color] * count)
+        return [''.join(p) for p in set(itertools.permutations(elements))]
+
+    def initialize(self):
+        # Start with counting phase - monochrome guesses
+        self.current_guesses = []
+        for color in self.colors[:-1]:
+            self.current_guesses.append(color * self.board_length)
+        self.current_index = 0
+        self.color_counts = {}
+        self.counting_phase = True
+
+    def filter_guesses(self, last_response):
+        if self.counting_phase:
+            if self.last_guess is not None:
+                total_matches = last_response[0] + last_response[1]
+                color = self.last_guess[0]
+                self.color_counts[color] = total_matches
+                
+                if len(self.color_counts) == len(self.colors) - 1:
+                    # Deduce last color count
+                    known_sum = sum(self.color_counts.values())
+                    last_color = self.colors[-1]
+                    self.color_counts[last_color] = self.board_length - known_sum
+                    
+                    # Generate initial guess list based on color counts
+                    self.current_guesses = self.generate_combinations(self.color_counts)
+                    self.current_index = 0
+                    self.counting_phase = False
+        else:
+            # Use exhaustive elimination on the remaining guesses
+            if self.last_guess is not None:
+                last_guess_list = list(self.last_guess)
+                self.current_guesses = [
+                    guess for guess in self.current_guesses 
+                    if self.matches_response(list(guess), last_guess_list, last_response[0], last_response[1])
+                ]
+                self.current_index = 0
+
+    def get_next_guess(self):
+        if self.current_index >= len(self.current_guesses):
+            return self.colors[0] * self.board_length
+        
+        guess = self.current_guesses[self.current_index]
+        self.last_guess = guess
+        self.current_index += 1
+        return guess
 
 """
 Inherits matching result  method of Baseline 2 Exhausive solver, 
@@ -135,34 +204,62 @@ class TwoColorAlternatingSolver(ExhaustiveStrategy):
         self.current_index = 0
 
 
-"""
-Original 2 Color Alt algorithm
-"""
-def solveTwoColorAlternating(board_length: int, colors: list[str]):
-    # Can be further optimized by taking the previous guess and removing certain colors from previous guess.
-    colorPairs = list(itertools.permutations(colors, 2))
-    patterns = []
-    for pair in colorPairs:
-        pattern = []
-        for i in range(board_length):
-            if i % 2 == 0:
-                pattern.append(pair[0])
-            else:
-                pattern.append(pair[1])
-        patterns.append(pattern)
-    return itertools.cycle(patterns)
-
-
 '''
     Essentially, the first 4 colors of the code are generated
     seemingly at random, but then those 4 colors repeat until
     it reaches the lenght of the board
 '''
-#Mystery2Solver class here
+class Mystery2Solver(HybridStrategy):
+    '''
+    Essentially, the first 4 colors of the code are generated
+    seemingly at random, but then those 4 colors repeat until
+    it reaches the length of the board
+    '''
+    def initialize(self):
+        # Start with counting phase - monochrome guesses
+        self.current_guesses = []
+        for color in self.colors:  # Try all colors since we don't know which 4 are used
+            self.current_guesses.append(color * self.board_length)
+        self.current_index = 0
+        self.color_counts = {}
+        self.counting_phase = True
 
-        
+    def filter_guesses(self, last_response):
+        if self.counting_phase:
+            if self.last_guess is not None:
+                total_matches = last_response[0] + last_response[1]
+                if total_matches > 0:  # Only store colors that are actually used
+                    color = self.last_guess[0]
+                    self.color_counts[color] = total_matches
+                
+                # If we've found exactly 4 colors with matches, we can stop counting
+                if sum(count > 0 for count in self.color_counts.values()) == 4:
+                    # Generate all possible 4-color permutations from the used colors
+                    used_colors = list(self.color_counts.keys())
+                    four_color_perms = list(itertools.permutations(used_colors, 4))
+                    
+                    # For each permutation, create the full pattern by repeating it
+                    patterns = []
+                    for perm in four_color_perms:
+                        pattern = list(perm)
+                        while len(pattern) < self.board_length:
+                            next_pos = len(pattern)
+                            pattern.append(perm[next_pos % 4])
+                        patterns.append(''.join(pattern))
+                    
+                    self.current_guesses = patterns
+                    self.current_index = 0
+                    self.counting_phase = False
+        else:
+            # Use exhaustive elimination on the remaining guesses
+            if self.last_guess is not None:
+                last_guess_list = list(self.last_guess)
+                self.current_guesses = [
+                    guess for guess in self.current_guesses 
+                    if self.matches_response(list(guess), last_guess_list, last_response[0], last_response[1])
+                ]
+                self.current_index = 0
 
-    
 
 def solveTwoColors(board_length: int, colors: list[str]):
     pattern = [colors[0]] * board_length
@@ -247,7 +344,7 @@ class _350Royale(Player):
             # Henry Tse
             if scsa_name == "InsertColors":
                 self.use_last_guess = True
-                self.solver = CountingStrategy(board_length, colors)
+                self.solver = HybridStrategy(board_length, colors)
                 self.solver.initialize()
             
             # Usman Sheikh
