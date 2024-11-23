@@ -3,7 +3,6 @@ from player import *
 from mastermind import *
 import itertools
 import random
-import _350Royale_B2
 
 class Solver:
     """Base class for different solving strategies"""
@@ -25,6 +24,12 @@ class Solver:
         """Get the next guess from the strategy"""
         raise NotImplementedError
 
+"""
+Baseline 2
+Exhauselively lists all possible combinations of colors of the board length.
+After each guess, uses response from it to eliminate all combinations impossible
+given the previous guess' result.
+"""
 class ExhaustiveStrategy(Solver):
     """Baseline 2"""
     def matches_response(self, candidate: list, last_guess: list, correct_pos: int, correct_color: int) -> bool:
@@ -57,20 +62,82 @@ class ExhaustiveStrategy(Solver):
         self.current_index += 1
         return guess
     
-def solveInsertColors():
-    None
+class CountingStrategy(Solver):
+    '''Baseline 3'''
+    def __init__(self, board_length, colors):
+        super().__init__(board_length, colors)
+        self.color_counts = {}
+        self.counting_phase = True
+        self.current_index = 0
+        self.current_guesses = []
 
-def solveTwoColors(board_length: int, colors: list[str]):
-    pattern = [colors[0]] * board_length
-    return itertools.cycle([pattern])
+    def generate_combinations(self, color_counts):
+        elements = []
+        for color, count in color_counts.items():
+            elements.extend([color] * count)
+        return list(set(itertools.permutations(elements)))
+
+    def initialize(self):
+        # Initialize with monochrome guesses for all colors except the last
+        self.current_guesses = []
+        for color in self.colors[:-1]:
+            self.current_guesses.append(color * self.board_length)
+        self.current_index = 0
+        self.color_counts = {}
+        self.counting_phase = True
+
+    def filter_guesses(self, last_response):
+        if self.last_guess is not None and self.counting_phase:
+            total_matches = last_response[0] + last_response[1]
+            color = self.last_guess[0]
+            self.color_counts[color] = total_matches
+            
+            if len(self.color_counts) == len(self.colors) - 1:
+                # Deduce last color count
+                known_sum = sum(self.color_counts.values())
+                last_color = self.colors[-1]
+                self.color_counts[last_color] = self.board_length - known_sum
+                
+                # Generate new guess list based on color counts
+                self.current_guesses = [''.join(p) for p in self.generate_combinations(self.color_counts)]
+                self.current_index = 0
+                self.counting_phase = False
+
+    def get_next_guess(self):
+        if self.current_index >= len(self.current_guesses):
+            return self.colors[0] * self.board_length
+        
+        guess = self.current_guesses[self.current_index]
+        self.last_guess = guess
+        self.current_index += 1
+        return guess
 
 
-def solveABColor(board_length: int):
-    # Can be further optimized by taking the previous guess and keeping only the indexes where the correct color is in the correct position
-    usable_colors = ["A", "B"]
-    return itertools.cycle(itertools.product(usable_colors, repeat=board_length))
+"""
+Inherits matching result  method of Baseline 2 Exhausive solver, 
+changes the initial guess list to only permutations of every ordered pair
+ of colors
+"""
+class TwoColorAlternatingSolver(ExhaustiveStrategy):
+    def initialize(self):
+        colorPairs = list(itertools.permutations(self.colors, 2))
+        patterns = []
+        for pair in colorPairs:
+            pattern = []
+            for i in range(self.board_length):
+                if i % 2 == 0:
+                    pattern.append(pair[0])
+                else:
+                    pattern.append(pair[1])
+            patterns.append(pattern)
+        
+        self.current_guesses = patterns
+        self.current_index = 0
 
 
+"""
+Original 2 Color Alt algorithm
+"""
 def solveTwoColorAlternating(board_length: int, colors: list[str]):
     # Can be further optimized by taking the previous guess and removing certain colors from previous guess.
     colorPairs = list(itertools.permutations(colors, 2))
@@ -84,6 +151,28 @@ def solveTwoColorAlternating(board_length: int, colors: list[str]):
                 pattern.append(pair[1])
         patterns.append(pattern)
     return itertools.cycle(patterns)
+
+
+'''
+    Essentially, the first 4 colors of the code are generated
+    seemingly at random, but then those 4 colors repeat until
+    it reaches the lenght of the board
+'''
+#Mystery2Solver class here
+
+        
+
+    
+
+def solveTwoColors(board_length: int, colors: list[str]):
+    pattern = [colors[0]] * board_length
+    return itertools.cycle([pattern])
+
+
+def solveABColor(board_length: int):
+    # Can be further optimized by taking the previous guess and keeping only the indexes where the correct color is in the correct position
+    usable_colors = ["A", "B"]
+    return itertools.cycle(itertools.product(usable_colors, repeat=board_length))
 
 
 def solveOnlyOnce(board_length: int, colors: list[str]):
@@ -136,9 +225,6 @@ def solvePreferFewer(board_length: int, colors: list[str]):
     return itertools.cycle(guess_list)
 
 
-def solveGeneralPurpose(board_length: int, colors: list[str]):
-    return solveInsertColors(board_length, colors)
-
 
 class _350Royale(Player):
     def __init__(self):
@@ -161,7 +247,7 @@ class _350Royale(Player):
             # Henry Tse
             if scsa_name == "InsertColors":
                 self.use_last_guess = True
-                self.solver = ExhaustiveStrategy(board_length, colors)
+                self.solver = CountingStrategy(board_length, colors)
                 self.solver.initialize()
             
             # Usman Sheikh
@@ -174,7 +260,10 @@ class _350Royale(Player):
             
             # Henry Tse
             elif scsa_name == "TwoColorAlternating":
-                self.guess_list = solveTwoColorAlternating(board_length, colors)
+                self.use_last_guess = True
+                self.solver = TwoColorAlternatingSolver(board_length, colors)
+                self.solver.initialize()
+                #self.guess_list = solveTwoColorAlternating(board_length, colors)
             
             # Usman Sheikh
             elif scsa_name == "OnlyOnce":
@@ -186,12 +275,78 @@ class _350Royale(Player):
             
             # Jacob Martin
             elif scsa_name == "UsuallyFewer":
-                self.guess_list = solveUsuallyFewer(board_length, colors)
-                # helper = _350Royale_B2.Baseline2()
+                # self.guess_list = solveUsuallyFewer(board_length, colors)
+                self.use_last_guess = True
+                self.solver = ExhaustiveStrategy(board_length, colors)
+                self.solver.initialize()
             
             # Jacob Martin
             elif scsa_name == "PreferFewer":
                 self.guess_list = solvePreferFewer(board_length, colors)
+
+            elif scsa_name == "Mystery1":
+                '''
+                Mystery 1 seems to favor monochrome codes but has a tendancy to 
+                generate some sort of pattern, still not sure what it is
+                Seems similar to PreferFewer
+                '''
+                self.use_last_guess = True
+                self.solver = ExhaustiveStrategy(board_length, colors)
+                self.solver.initialize()
+
+            elif scsa_name == "Mystery2":
+                '''
+                Essentially, the first 4 colors of the code are generated
+                seemingly at random, but then those 4 colors repeat until
+                it reaches the lenght of the board
+                '''
+                self.use_last_guess = True
+                self.solver = ExhaustiveStrategy(board_length, colors)
+                self.solver.initialize()
+
+            elif scsa_name == "Mystery3":
+                '''
+                Will only use the color A,B,C,F
+                Could have a pattern though
+                '''
+                self.use_last_guess = True
+                self.solver = ExhaustiveStrategy(board_length, colors)
+                self.solver.initialize()
+
+            elif scsa_name == "Mystery4":
+                '''
+                Strong preference for single color codes
+                If there are more than one color, it is either 1 or 2 more colors
+
+                '''
+                self.use_last_guess = True
+                self.solver = ExhaustiveStrategy(board_length, colors)
+                self.solver.initialize()
+
+            elif scsa_name == "Mystery5":
+                '''
+                WIll only use two colors    
+                    E.g A and B
+
+                Will start off repeating the two colors in pairs twice
+                    BABA
+
+                Then It repeats the pattern in reverse order
+                    ABAB
+
+                Finally prints out the second color in the first pair twice
+                    AA
+
+                Resulting in the following pattern:
+                    BABAABABAA
+                    BABA ABAB AA
+
+                Since the example output only is board length 10, the rest of the pattern is assumed to 
+                repeat.
+                '''
+                self.use_last_guess = True
+                self.solver = ExhaustiveStrategy(board_length, colors)
+                self.solver.initialize()
             
             # Henry Tse
             else:
@@ -213,3 +368,22 @@ class _350Royale(Player):
             guess = self.solver.get_next_guess()
             self.num_guesses += 1
             return guess
+
+"""
+Notes for future reference
+==========================
+
+Keeping track of the board and color selection size
+
+    Tourys will probably act differently based on the size of the board length and/or the amount
+    of possilbe colors. There should be a board length and color check when selecting an SCSA to optimize/maximize
+    the number of correct guesses.
+
+    Example:
+        TwoColorAlternating is faster under brute force method but
+        can only win all 100 rounds given a small board length and color selection.
+
+        When TwoColorAlternating uses elimination from Baseline 2, it is slower but
+        is capable of running the max tournament of 100-26 wihtout losing a single round.
+ 
+"""
