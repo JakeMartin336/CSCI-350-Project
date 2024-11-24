@@ -61,9 +61,15 @@ class ExhaustiveStrategy(Solver):
         self.last_guess = guess
         self.current_index += 1
         return guess
-    
+
+
+"""
+Baseline 3
+Counts the number of times each color appears in the code
+and then generates all possible combinations of the colors
+that could be in the code
+"""   
 class CountingStrategy(Solver):
-    '''Baseline 3'''
     def __init__(self, board_length, colors):
         super().__init__(board_length, colors)
         self.color_counts = {}
@@ -114,7 +120,7 @@ class CountingStrategy(Solver):
 
 """
 Hybrid Strategy
-Combines CountingStrategy's color counting with ExhaustiveStrategy's elimination
+Combines CountingStrategy's color counting with ExhaustiveStrategy's elimination (Baseline 2 + 3 combined)
 """
 class HybridStrategy(Solver):
     def __init__(self, board_length, colors):
@@ -183,6 +189,7 @@ class HybridStrategy(Solver):
         return guess
 
 """
+Solves for TwoColorAlternating
 Inherits matching result  method of Baseline 2 Exhausive solver, 
 changes the initial guess list to only permutations of every ordered pair
  of colors
@@ -204,17 +211,13 @@ class TwoColorAlternatingSolver(ExhaustiveStrategy):
         self.current_index = 0
 
 
-'''
-    Essentially, the first 4 colors of the code are generated
-    seemingly at random, but then those 4 colors repeat until
-    it reaches the lenght of the board
-'''
+"""
+Solves for Mystery2 SCSAs based on the following analysis:
+Essentially, the first 4 colors of the code are generated
+seemingly at random, but then those 4 colors repeat until
+it reaches the lenght of the board
+"""
 class Mystery2Solver(HybridStrategy):
-    '''
-    Essentially, the first 4 colors of the code are generated
-    seemingly at random, but then those 4 colors repeat until
-    it reaches the length of the board
-    '''
     def initialize(self):
         # Start with counting phase - monochrome guesses
         self.current_guesses = []
@@ -322,7 +325,10 @@ def solvePreferFewer(board_length: int, colors: list[str]):
     return itertools.cycle(guess_list)
 
 
-
+"""
+Player class for _350Royale
+Will select solver based on the SCSAs name
+"""
 class _350Royale(Player):
     def __init__(self):
         self.player_name = "_350Royale"
