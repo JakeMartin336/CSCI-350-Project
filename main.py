@@ -10,7 +10,6 @@
 import argparse
 import _350Royale_B1
 import _350Royale_B2
-import _350Royale_B3
 import _350Royale_d3
 from scsa import *
 from player import *
@@ -44,6 +43,7 @@ parser.add_argument(
         "FirstLast",
         "UsuallyFewer",
         "PreferFewer",
+        "Mystery2",
     ],
 )
 parser.add_argument("--num_rounds", nargs="?", type=int, required=True)
@@ -99,6 +99,9 @@ def str_to_scsa(scsa_name: str) -> SCSA:
     elif scsa_name == "PreferFewer":
         scsa = PreferFewer()
 
+    elif scsa_name == "Mystery2":
+        scsa = Mystery2()
+
     else:
         raise ValueError("Unrecognized SCSA.")
 
@@ -136,8 +139,3 @@ print(f"Average time per round: {(end_time - start_time)/args.num_rounds:.4f} se
 
 # mastermind = Mastermind(args.board_length, colors, guess_cutoff, round_time_cutoff, tournament_time_cutoff)
 # mastermind.play_tournament(player, scsa, num_rounds)
-
-
-
-# 7 pegs
-# 5 colors

@@ -510,3 +510,28 @@ class PreferFewer(SCSA):
             codes.append(code)
 
         return codes
+
+
+class Mystery2(SCSA):
+    def __init__(self):
+        self.name = "Mystery2"
+        self.code = None
+
+    def generate_codes(self, board_length: int, colors: list[str], num_codes: int = 1) -> list[str]:
+        codes = []
+        for _ in range(num_codes):
+            # Select 4 random unique colors for the pattern
+            pattern_colors = random.sample(colors, 4)
+            
+            # Create the code by repeating the pattern
+            code = []
+            while len(code) < board_length:
+                next_pos = len(code)
+                code.append(pattern_colors[next_pos % 4])
+            
+            codes.append(''.join(code))
+        
+        return codes
+
+    def respond(self, guess: str) -> tuple[int, int, int]:
+        return super().respond(guess)
