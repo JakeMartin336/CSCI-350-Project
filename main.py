@@ -108,13 +108,6 @@ def str_to_scsa(scsa_name: str) -> SCSA:
     return scsa
 
 
-
-# Output (teamName_d3.txt) from 5-7 tournaments where your current tournament player played 100 rounds in 
-# a 5-7 tournament against each of the 13 SCSAs and made no illegal guesses. 
-# • Output (teamName_B#.txt) from 5-7 tournaments where your baseline player played 100 rounds in a 5-7 
-# tournament against each of the 13 SCSAs and made no illegal guesses.
-
-
 player = str_to_player(args.player_name)
 scsa = str_to_scsa(args.scsa_name)
 colors = [chr(i) for i in range(65, 91)][: args.num_colors]
@@ -131,11 +124,3 @@ print(f"Time taken: {end_time - start_time:.4f} seconds")
 print(f"Average time per round: {(end_time - start_time)/args.num_rounds:.4f} seconds")
 
 ###################################################################################
-
-# num_rounds = 100
-# guess_cutoff = 250  # Default is 100 guesses
-# round_time_cutoff = 10  # Default is 5 seconds
-# tournament_time_cutoff = 1000  # Default is 300 seconds
-
-# mastermind = Mastermind(args.board_length, colors, guess_cutoff, round_time_cutoff, tournament_time_cutoff)
-# mastermind.play_tournament(player, scsa, num_rounds)
