@@ -395,10 +395,10 @@ class _350Royale(Player):
                 '''
                 Essentially, the first 4 colors of the code are generated
                 seemingly at random, but then those 4 colors repeat until
-                it reaches the lenght of the board
+                it reaches the length of the board
                 '''
                 self.use_last_guess = True
-                self.solver = ExhaustiveStrategy(board_length, colors)
+                self.solver = Mystery2Solver(board_length, colors)
                 self.solver.initialize()
 
             elif scsa_name == "Mystery3":
@@ -442,7 +442,7 @@ class _350Royale(Player):
                 repeat.
                 '''
                 self.use_last_guess = True
-                self.solver = ExhaustiveStrategy(board_length, colors)
+                self.solver = HybridStrategy(board_length, colors)
                 self.solver.initialize()
             
             # Henry Tse
