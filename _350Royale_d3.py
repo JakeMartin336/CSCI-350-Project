@@ -407,7 +407,7 @@ class _350Royale(Player):
                 Could have a pattern though
                 '''
                 self.use_last_guess = True
-                self.solver = ExhaustiveStrategy(board_length, colors)
+                self.solver = HybridStrategy(board_length, colors)
                 self.solver.initialize()
 
             elif scsa_name == "Mystery4":
