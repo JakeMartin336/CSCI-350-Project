@@ -298,16 +298,24 @@ class Mystery2Solver(HybridStrategy):
                 self.current_index = 0
 
 
+class ABColorSolver(ExhaustiveStrategy):
+    def initialize(self):
+        usable_colors = ["A", "B"]
+        self.current_guesses = list(itertools.product(usable_colors, repeat=self.board_length))
+        self.current_index = 0
+
+
+class ABColorSolver(ExhaustiveStrategy):
+    def initialize(self):
+        usable_colors = ["A", "B"]
+        self.current_guesses = list(itertools.product(usable_colors, repeat=self.board_length))
+        self.current_index = 0
+
+
 def solveTwoColors(board_length: int, colors: list[str]):
     pattern = [colors[0]] * board_length
     return itertools.cycle([pattern])
-
-
-def solveABColor(board_length: int):
-    # Can be further optimized by taking the previous guess and keeping only the indexes where the correct color is in the correct position
-    usable_colors = ["A", "B"]
-    return itertools.cycle(itertools.product(usable_colors, repeat=board_length))
-
+    
 
 def solveOnlyOnce(board_length: int, colors: list[str]):
     pattern = [colors[0]] * board_length
@@ -318,45 +326,6 @@ def solveFirstLast(board_length: int, colors: list[str]):
     pattern = [colors[0]] * board_length
     return itertools.cycle([pattern])
 
-
-def solveUsuallyFewer(board_length: int, colors: list[str]):
-    guess_list = []
-    for _ in range(100):
-        probability = random.randint(0, 100)
-        if probability < 90:
-            num_colors = random.randint(2, 3)
-            picked_colors = random.sample(colors, k=num_colors)
-        else:
-            picked_colors = colors
-        pattern = random.choices(picked_colors, k=board_length)
-        guess_list.append(pattern)
-    return itertools.cycle(guess_list)
-
-
-def solvePreferFewer(board_length: int, colors: list[str]):
-    guess_list = []
-    for _ in range(100):
-        probability = random.randint(0, 100)
-        if probability <= 49:
-            num_colors = 1
-            picked_colors = random.sample(colors, k=num_colors)
-        elif probability <= 74:
-            num_colors = 2
-            picked_colors = random.sample(colors, k=num_colors)
-        elif probability <= 87:
-            num_colors = min(3, len(colors))
-            picked_colors = random.sample(colors, k=num_colors)
-        elif probability <= 95:
-            num_colors = min(4, len(colors))
-            picked_colors = random.sample(colors, k=num_colors)
-        elif probability <= 98:
-            num_colors = min(5, len(colors))
-            picked_colors = random.sample(colors, k=num_colors)
-        else:
-            picked_colors=colors
-        pattern = random.choices(picked_colors, k=board_length)
-        guess_list.append(pattern)
-    return itertools.cycle(guess_list)
 
 
 """
@@ -393,8 +362,10 @@ class _350Royale(Player):
             
             # Jacob Martin
             elif scsa_name == "ABColor":
-                self.guess_list = solveABColor(board_length)
-            
+                self.use_last_guess = True
+                self.solver = ABColorSolver(board_length, colors)
+                self.solver.initialize()
+                
             # Henry Tse
             elif scsa_name == "TwoColorAlternating":
                 self.use_last_guess = True
@@ -412,14 +383,12 @@ class _350Royale(Player):
             
             # Jacob Martin
             elif scsa_name == "UsuallyFewer":
-                #self.guess_list = solveUsuallyFewer(board_length, colors)
                 self.use_last_guess = True
                 self.solver = HybridStrategy(board_length, colors)
                 self.solver.initialize()
             
             # Jacob Martin
             elif scsa_name == "PreferFewer":
-                #self.guess_list = solvePreferFewer(board_length, colors)
                 self.use_last_guess = True
                 self.solver = HybridStrategy(board_length, colors)
                 self.solver.initialize()
