@@ -264,16 +264,17 @@ class Mystery2Solver(HybridStrategy):
                 self.current_index = 0
 
 
+class ABColorSolver(ExhaustiveStrategy):
+    def initialize(self):
+        usable_colors = ["A", "B"]
+        self.current_guesses = list(itertools.product(usable_colors, repeat=self.board_length))
+        self.current_index = 0
+
+
 def solveTwoColors(board_length: int, colors: list[str]):
     pattern = [colors[0]] * board_length
     return itertools.cycle([pattern])
-
-
-def solveABColor(board_length: int):
-    # Can be further optimized by taking the previous guess and keeping only the indexes where the correct color is in the correct position
-    usable_colors = ["A", "B"]
-    return itertools.cycle(itertools.product(usable_colors, repeat=board_length))
-
+    
 
 def solveOnlyOnce(board_length: int, colors: list[str]):
     pattern = [colors[0]] * board_length
@@ -359,8 +360,10 @@ class _350Royale(Player):
             
             # Jacob Martin
             elif scsa_name == "ABColor":
-                self.guess_list = solveABColor(board_length)
-            
+                self.use_last_guess = True
+                self.solver = ABColorSolver(board_length, colors)
+                self.solver.initialize()
+                
             # Henry Tse
             elif scsa_name == "TwoColorAlternating":
                 self.use_last_guess = True
