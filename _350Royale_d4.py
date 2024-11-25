@@ -305,13 +305,6 @@ class ABColorSolver(ExhaustiveStrategy):
         self.current_index = 0
 
 
-class ABColorSolver(ExhaustiveStrategy):
-    def initialize(self):
-        usable_colors = ["A", "B"]
-        self.current_guesses = list(itertools.product(usable_colors, repeat=self.board_length))
-        self.current_index = 0
-
-
 def solveTwoColors(board_length: int, colors: list[str]):
     pattern = [colors[0]] * board_length
     return itertools.cycle([pattern])
