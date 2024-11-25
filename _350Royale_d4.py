@@ -3,6 +3,7 @@ from player import *
 from mastermind import *
 import itertools
 import random
+import time
 
 class Solver:
     """Base class for different solving strategies"""
@@ -11,6 +12,8 @@ class Solver:
         self.colors = colors
         self.current_guesses = []
         self.last_guess = None
+        self.start_time = None
+        self.time_limit = 4.9  # Slightly under 5 seconds to allow for overhead
     
     def initialize(self):
         """Initialize the strategy's guess list"""
@@ -23,6 +26,12 @@ class Solver:
     def get_next_guess(self):
         """Get the next guess from the strategy"""
         raise NotImplementedError
+        
+    def check_time(self):
+        """Check if we've exceeded time limit"""
+        if self.start_time is None:
+            self.start_time = time.time()
+        return (time.time() - self.start_time) <= self.time_limit
 
 """
 Baseline 2
@@ -138,21 +147,41 @@ class HybridStrategy(Solver):
         return exact == correct_pos and (color_matches - exact) == correct_color
 
     def generate_combinations(self, color_counts):
+        if not self.check_time():
+            return [self.colors[0] * self.board_length]
+        
         elements = []
         for color, count in color_counts.items():
             elements.extend([color] * count)
-        return [''.join(p) for p in set(itertools.permutations(elements))]
+        
+        # Get permutations iterator instead of generating all at once
+        perms = itertools.permutations(elements)
+        combinations = []
+        max_combinations = 100000  # Limit number of combinations to prevent excessive processing
+        
+        # Take permutations until time runs out or max limit reached
+        for i, p in enumerate(perms):
+            if not self.check_time() or i >= max_combinations:
+                if not combinations:  # If we haven't found any combinations yet
+                    return [self.colors[0] * self.board_length]
+                break
+            combinations.append(''.join(p))
+        
+        return list(set(combinations))  # Remove duplicates
 
     def initialize(self):
         # Start with counting phase - monochrome guesses
         self.current_guesses = []
         for color in self.colors[:-1]:
             self.current_guesses.append(color * self.board_length)
+            if not self.check_time():
+                break
         self.current_index = 0
         self.color_counts = {}
         self.counting_phase = True
 
     def filter_guesses(self, last_response):
+        
         if self.counting_phase:
             if self.last_guess is not None:
                 total_matches = last_response[0] + last_response[1]
@@ -164,12 +193,12 @@ class HybridStrategy(Solver):
                     known_sum = sum(self.color_counts.values())
                     last_color = self.colors[-1]
                     self.color_counts[last_color] = self.board_length - known_sum
-                    
                     # Generate initial guess list based on color counts
                     self.current_guesses = self.generate_combinations(self.color_counts)
                     self.current_index = 0
                     self.counting_phase = False
         else:
+            
             # Use exhaustive elimination on the remaining guesses
             if self.last_guess is not None:
                 last_guess_list = list(self.last_guess)
@@ -180,6 +209,9 @@ class HybridStrategy(Solver):
                 self.current_index = 0
 
     def get_next_guess(self):
+        if not self.check_time():
+            return self.colors[0] * self.board_length
+        
         if self.current_index >= len(self.current_guesses):
             return self.colors[0] * self.board_length
         
@@ -187,6 +219,8 @@ class HybridStrategy(Solver):
         self.last_guess = guess
         self.current_index += 1
         return guess
+
+
 
 """
 Solves for TwoColorAlternating
@@ -378,14 +412,17 @@ class _350Royale(Player):
             
             # Jacob Martin
             elif scsa_name == "UsuallyFewer":
-                # self.guess_list = solveUsuallyFewer(board_length, colors)
+                #self.guess_list = solveUsuallyFewer(board_length, colors)
                 self.use_last_guess = True
-                self.solver = ExhaustiveStrategy(board_length, colors)
+                self.solver = HybridStrategy(board_length, colors)
                 self.solver.initialize()
             
             # Jacob Martin
             elif scsa_name == "PreferFewer":
-                self.guess_list = solvePreferFewer(board_length, colors)
+                #self.guess_list = solvePreferFewer(board_length, colors)
+                self.use_last_guess = True
+                self.solver = HybridStrategy(board_length, colors)
+                self.solver.initialize()
 
             elif scsa_name == "Mystery1":
                 '''
@@ -394,7 +431,7 @@ class _350Royale(Player):
                 Seems similar to PreferFewer
                 '''
                 self.use_last_guess = True
-                self.solver = ExhaustiveStrategy(board_length, colors)
+                self.solver = HybridStrategy(board_length, colors)
                 self.solver.initialize()
 
             elif scsa_name == "Mystery2":
@@ -413,7 +450,7 @@ class _350Royale(Player):
                 Could have a pattern though
                 '''
                 self.use_last_guess = True
-                self.solver = ExhaustiveStrategy(board_length, colors)
+                self.solver = HybridStrategy(board_length, colors)
                 self.solver.initialize()
 
             elif scsa_name == "Mystery4":
@@ -423,7 +460,7 @@ class _350Royale(Player):
 
                 '''
                 self.use_last_guess = True
-                self.solver = ExhaustiveStrategy(board_length, colors)
+                self.solver = HybridStrategy(board_length, colors)
                 self.solver.initialize()
 
             elif scsa_name == "Mystery5":
@@ -454,7 +491,7 @@ class _350Royale(Player):
             # Henry Tse
             else:
                 self.use_last_guess = True
-                self.solver = ExhaustiveStrategy(board_length, colors)
+                self.solver = HybridStrategy(board_length, colors)
                 self.solver.initialize()
         
         elif self.use_last_guess:
