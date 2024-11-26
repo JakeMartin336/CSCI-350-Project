@@ -1,0 +1,11 @@
+Player: _350Royale
+SCSA Name: TwoColorAlternating
+Game: 8 Pegs 10 Colors
+Rounds: 100 out of 100
+Results: {Wins: 100, Losses: 0, Failures: 0, Score: 17624.591691586927}
+
+Player: _350Royale
+SCSA Name: UsuallyFewer
+Game: 8 Pegs 10 Colors
+Rounds: 100 out of 100
+Results: {Wins: 100, Losses: 0, Failures: 0, Score: 10830.574388396255}
