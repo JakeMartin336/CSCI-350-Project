@@ -305,9 +305,15 @@ class ABColorSolver(ExhaustiveStrategy):
         self.current_index = 0
 
 
-def solveTwoColors(board_length: int, colors: list[str]):
-    pattern = [colors[0]] * board_length
-    return itertools.cycle([pattern])
+class TwoColorSolver(ExhaustiveStrategy):
+    def initialize(self):
+        result = []
+        color_pairs = list(itertools.combinations(self.colors, 2))
+        for pair in color_pairs:
+            curr_pattern = list(itertools.product(pair, repeat=self.board_length))
+            result.extend(curr_pattern)
+        self.current_guesses = result
+        self.current_index = 0
     
 
 def solveOnlyOnce(board_length: int, colors: list[str]):
@@ -349,9 +355,10 @@ class _350Royale(Player):
                 self.solver = HybridStrategy(board_length, colors)
                 self.solver.initialize()
             
-            # Usman Sheikh
             elif scsa_name == "TwoColor":
-                self.guess_list = solveTwoColors(board_length, colors)
+                self.use_last_guess = True
+                self.solver = TwoColorSolver(board_length, colors)
+                self.solver.initialize()
             
             # Jacob Martin
             elif scsa_name == "ABColor":
