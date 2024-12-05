@@ -279,6 +279,7 @@ class Round:
             self.time_used += duration
 
             response = self.respond_to_guess(guess)
+            print(response)
             player_response = response[1:]  # Remove result element
 
             # print("Response:", response, "Time:", self.time_used)
@@ -363,9 +364,11 @@ class Mastermind:
                 self.round_time_cutoff,
             )
 
+
+
             start = time.time()
             result, guesses = round.play_round(player)
-            end = time.time()
+            end = time.time()   
 
             duration = end - start
 
@@ -376,7 +379,7 @@ class Mastermind:
                 break
 
             # print("Round:", round, "|",  "Result:", result, "|", "Guesses:", guesses)
-
+        
             results.record_result(result)
 
             if result == Result.WIN:

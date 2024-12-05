@@ -90,6 +90,12 @@ def solveOnlyOnce(board_length: int, colors: list[str]):
     pattern = [colors[0]] * board_length
     return itertools.cycle([pattern])
 
+class solveOnlyOnce(Solver):
+    def solveOnlyOnce(board_length: int, colors: list[str]):
+        pattern = [colors[0]] * board_length
+        return itertools.cycle([pattern])
+    
+
 
 def solveFirstLast(board_length: int, colors: list[str]):
     pattern = [colors[0]] * board_length
@@ -178,6 +184,8 @@ class _350Royale(Player):
             
             # Usman Sheikh
             elif scsa_name == "OnlyOnce":
+                solver = solveOnlyOnce()
+                self.guess_list = solver.solveOnlyOnce(board_length,colors)
                 self.guess_list = solveOnlyOnce(board_length, colors)
             
             # Usman Sheikh

@@ -189,6 +189,7 @@ class TwoColor(SCSA):
             code[indicies[0]] = usable_colors[0]
             code[indicies[1]] = usable_colors[1]
 
+
             # Set rest of spots in code to one of the two colors randomly
             for i in range(length):
 
@@ -343,7 +344,8 @@ class OnlyOnce(SCSA):
                     code += random.choice(colors)
 
             codes.append(code)
-
+        
+        print(codes)
         return codes
 
 
